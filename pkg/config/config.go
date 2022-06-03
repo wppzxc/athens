@@ -50,6 +50,7 @@ type Config struct {
 	TLSCertFile      string    `envconfig:"ATHENS_TLSCERT_FILE"`
 	TLSKeyFile       string    `envconfig:"ATHENS_TLSKEY_FILE"`
 	SumDBs           []string  `envconfig:"ATHENS_SUM_DBS"`
+	SumDBProxyTo     []string  `envconfig:"ATHENS_SUM_DB_PROXY_TO"`
 	NoSumPatterns    []string  `envconfig:"ATHENS_GONOSUM_PATTERNS"`
 	DownloadMode     mode.Mode `envconfig:"ATHENS_DOWNLOAD_MODE"`
 	DownloadURL      string    `envconfig:"ATHENS_DOWNLOAD_URL"`
@@ -160,6 +161,7 @@ func defaultConfig() *Config {
 		GlobalEndpoint:   "http://localhost:3001",
 		TraceExporterURL: "http://localhost:14268",
 		SumDBs:           []string{"https://sum.golang.org"},
+		SumDBProxyTo:     []string{},
 		NoSumPatterns:    []string{},
 		DownloadMode:     "sync",
 		DownloadURL:      "",

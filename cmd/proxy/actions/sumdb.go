@@ -1,6 +1,7 @@
 package actions
 
 import (
+	"log"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -9,8 +10,9 @@ import (
 	"github.com/gomods/athens/pkg/paths"
 )
 
-func sumdbProxy(url *url.URL, nosumPatterns []string) http.Handler {
+func sumdbProxy(url *url.URL, sumdbProxyTo, nosumPatterns []string) http.Handler {
 	rp := httputil.NewSingleHostReverseProxy(url)
+	url = sumdbProxyWrapper(url, sumdbProxyTo)
 	rp.Director = func(req *http.Request) {
 		req.Host = url.Host
 		req.URL.Scheme = url.Scheme
@@ -34,4 +36,18 @@ func noSumWrapper(h http.Handler, host string, patterns []string) http.Handler {
 		}
 		h.ServeHTTP(w, r)
 	})
+}
+
+func sumdbProxyWrapper(url *url.URL, sumdbProxyTo []string) *url.URL {
+	for _, p := range sumdbProxyTo {
+		strs := strings.Split(p, ":")
+		if len(strs) != 2 {
+			log.Printf("can't format sumdbProxyTo '%s'\n", p)
+			continue
+		}
+		if url.Host == strs[0] {
+			url.Host = strs[1]
+		}
+	}
+	return url
 }
